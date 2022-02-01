@@ -29,8 +29,8 @@ bg_scroll = 0
 start_game = False
 
 start_img = pygame.image.load('img/start_btn.png').convert_alpha()
-restart_img = pygame.image.load('img/restart_btn.png').convert_alpha()
 exit_img = pygame.image.load('img/exit_btn.png').convert_alpha()
+restart_img = pygame.image.load('img/restart_btn.png').convert_alpha()
 # background images
 pine1_img = pygame.image.load('img/background/pine1.png').convert_alpha()
 pine2_img = pygame.image.load('img/background/pine2.png').convert_alpha()
@@ -90,6 +90,24 @@ def draw_bg():
                     ((index * width) - bg_scroll * 0.6, SCREEN_HEIGHT - mountain_img.get_height() - 300))
         screen.blit(pine1_img, ((index * width) - bg_scroll * 0.7, SCREEN_HEIGHT - pine1_img.get_height() - 150))
         screen.blit(pine2_img, ((index * width) - bg_scroll * 0.8, SCREEN_HEIGHT - pine2_img.get_height()))
+
+
+def reset_level():
+    enemy_group.empty()
+    bullet_group.empty()
+    grenade_group.empty()
+    explosion_group.empty()
+    item_box_group.empty()
+    decoration_group.empty()
+    water_group.empty()
+    exit_group.empty()
+
+    data = []
+    for row in range(ROWS):
+        r = [-1] * COLS
+        data.append(r)
+
+    return data
 
 
 class Soldier(pygame.sprite.Sprite):
@@ -512,7 +530,7 @@ class Explosion(pygame.sprite.Sprite):
 
 start_button = button.Button(SCREEN_WIDTH // 2 - 130, SCREEN_HEIGHT // 2 - 150, start_img, 1)
 exit_button = button.Button(SCREEN_WIDTH // 2 - 110, SCREEN_HEIGHT // 2 + 50, exit_img, 1)
-restart_button = button.Button(SCREEN_WIDTH // 2 - 90, SCREEN_HEIGHT // 2 - 150, restart_img, 1)
+restart_button = button.Button(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 - 50, restart_img, 2)
 # create sprite groups
 bullet_group = pygame.sprite.Group()
 grenade_group = pygame.sprite.Group()
@@ -614,6 +632,20 @@ while run:
                 player.update_action(0)
             screen_scroll = player.move(moving_left, moving_right)
             bg_scroll -= screen_scroll
+        else:
+            screen_scroll = 0
+            if restart_button.draw(screen):
+                bg_scroll = 0
+                world_data = reset_level()
+                with open(f'level{level}_data.csv', newline='') as csvfile:
+                    reader = csv.reader(csvfile, delimiter=',')
+                    for x, row in enumerate(reader):
+                        for y, tile in enumerate(row):
+                            world_data[x][y] = int(tile)
+
+                world = World()
+                player, health_bar = world.process_data(world_data)
+
 
     for event in pygame.event.get():
         # quit game
