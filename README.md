@@ -1,3 +1,2 @@
-# 2D_game
-shooter
+# 2D_game shooter
 simple project for fun
