@@ -2,6 +2,7 @@
 Simple 2D game based on PyGame.
 ## Description
 The game have 3 levels. We control a soldier who has to reach the end of the level. In the levels we can find enemies, boxes of healing, ammo and granades.
+
 ![image](https://user-images.githubusercontent.com/98027002/176648389-983aa115-28c5-402f-a215-1df317be7d29.png)
 
 The enemies have a simple AI. They patrol the area and shoot at the player when they see him.
